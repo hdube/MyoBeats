@@ -1,5 +1,7 @@
 package myo.beats;
 
+import timeline.Timeline;
+
 import com.thalmic.myo.AbstractDeviceListener;
 import com.thalmic.myo.Arm;
 import com.thalmic.myo.DeviceListener;
@@ -136,7 +138,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hello_world);
-       
+        
         
         mTextView = (TextView) findViewById(R.id.text);
         InstrumentView = (TextView) findViewById(R.id.textView1);
@@ -152,6 +154,9 @@ public class MainActivity extends Activity {
         
         // Next, register for DeviceListener callbacks.
         hub.addListener(/*mListener*/ new MyoBeatsListener(mTextView));
+        
+        Timeline timeline = new Timeline(this);
+        timeline.run();
     }
 
     

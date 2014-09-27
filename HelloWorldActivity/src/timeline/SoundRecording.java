@@ -18,15 +18,21 @@ public final class SoundRecording {
 	}
 	
 	// get the sound to be made
-	public String getSound() {
+	public String getSoundPath() {
 		return this.soundPath;
 	}
 	
-	// get the next time we want to play the sound
-	public long getNextTimer() {
-		this.index++;
-		this.index%=count;
-		return this.timers[index];
+	public long getCurrentTimer() {
+		return timers[index];
 	}
 	
+	// get the next time we want to play the sound
+	public void gotoNextSound() {
+		this.index++;
+		this.index%=count;
+	}
+	
+	public long getFirstTimer() {
+		return timers[0];
+	}
 }
