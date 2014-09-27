@@ -19,15 +19,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    // This code will be returned in onActivityResult() when the enable Bluetooth activity exits.
+	public final static String[] Instrument = {"Drums", "Guitar", "Bass", "Go Crazy"};
+	int position = 0;
+	
+	
+	// This code will be returned in onActivityResult() when the enable Bluetooth activity exits.
     private static final int REQUEST_ENABLE_BT = 1;
 
     private TextView mTextView;
+    private TextView InstrumentView;
 
     // Classes that inherit from AbstractDeviceListener can be used to receive events from Myo devices.
     // If you do not override an event, the default behavior is to do nothing.
@@ -133,6 +139,7 @@ public class MainActivity extends Activity {
        
         
         mTextView = (TextView) findViewById(R.id.text);
+        InstrumentView = (TextView) findViewById(R.id.textView1);
 
         // First, we initialize the Hub singleton with an application identifier.
         Hub hub = Hub.getInstance();
@@ -147,6 +154,17 @@ public class MainActivity extends Activity {
         hub.addListener(/*mListener*/ new MyoBeatsListener(mTextView));
     }
 
+    
+    /** Called when the user clicks the Next Button */
+    public void NextInstrument(View view) {
+    	InstrumentView.setText(Instrument[(++position)%4]);
+    }
+    
+    /** Called when the user clicks the Previous Button */
+    public void PreviousInstrument(View view) {
+    	InstrumentView.setText(Instrument[(--position)%4]);
+    }
+    
     @Override
     protected void onResume() {
         super.onResume();

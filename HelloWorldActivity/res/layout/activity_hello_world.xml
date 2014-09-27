@@ -1,18 +1,46 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:columnCount="1"
+    android:orientation="horizontal"
     tools:context="com.thalmic.android.sample.helloworld.HelloWorldActivity"
-    tools:ignore="MergeRootFrame">
+    tools:ignore="MergeRootFrame" >
 
     <TextView
         android:id="@+id/text"
-        android:text="@string/hello_world"
+        android:layout_column="0"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_row="0"
+        android:text="@string/start_mixing"
         android:textSize="50dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        tools:ignore="SpUsage"/>
+        tools:ignore="SpUsage" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_column="0"
+        android:layout_gravity="center"
+        android:layout_row="0"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="100dp"
+        android:layout_column="0"
+        android:layout_gravity="right|center_vertical"
+        android:layout_row="0"
+        android:text="Next"
+        android:onClick="NextInstrument"/>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="100dp"
+        android:layout_column="0"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="0"
+        android:text="Previous"
+        android:onClick="PreviousInstrument" />
+
+</GridLayout>

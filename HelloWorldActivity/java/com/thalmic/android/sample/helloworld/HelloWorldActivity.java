@@ -102,7 +102,7 @@ public class HelloWorldActivity extends Activity {
                     mTextView.setText(getString(R.string.hello_world));
                     break;
                 case REST:
-                    int restTextId = R.string.hello_world;
+                    int restTextId = R.string.start_mixing;
                     switch (mArm) {
                         case LEFT:
                             restTextId = R.string.arm_left;
