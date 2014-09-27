@@ -14,6 +14,8 @@ public class Timeline implements Runnable {
 	private Record record;
 	private Context context;
 	
+	private boolean play=false;
+	
 	private SoundPool soundPool;
 	private int beat1ID;
 	private int beat2ID;
@@ -66,7 +68,7 @@ public class Timeline implements Runnable {
 		
 		Log.e("Hi", "Boolean loaded is "+(loaded?"true.":"false."));
 		
-		while(true) {
+		while(this.play) {
 			endTime = System.nanoTime();
 			currentDuration = endTime-startTime;
 			// This if statement only produces beats
@@ -88,6 +90,11 @@ public class Timeline implements Runnable {
 				 record.soundPlayed();
 			}
 		}
+	}
+	
+	public void switchMode() {
+		if (this.play) this.play=false;
+		else this.play=true;
 	}
 
 }

@@ -1,5 +1,7 @@
 package myo.beats;
 
+import timeline.Timeline;
+
 import com.thalmic.myo.AbstractDeviceListener;
 import com.thalmic.myo.Arm;
 import com.thalmic.myo.DeviceListener;
