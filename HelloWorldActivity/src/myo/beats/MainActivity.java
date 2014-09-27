@@ -1,7 +1,5 @@
 package myo.beats;
 
-import timeline.Timeline;
-
 import com.thalmic.myo.AbstractDeviceListener;
 import com.thalmic.myo.Arm;
 import com.thalmic.myo.DeviceListener;
@@ -9,6 +7,7 @@ import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
 import com.thalmic.myo.Quaternion;
+import com.thalmic.myo.Vector3;
 import com.thalmic.myo.XDirection;
 import com.thalmic.myo.scanner.ScanActivity;
 
@@ -28,8 +27,12 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	public final static String[] Instrument = {"Drums", "Guitar", "Bass", "Go Crazy"};
-	int position = 0;
-	
+	int position = 0, counter = 0;
+	Vector3 currentAccel = new Vector3(0.0, 0.0, 0.0);
+	// 1. Roll, 2. Pitch, 3. Yaw
+	Float[] prevOrient = {0.0f, 0.0f, 0.0f};
+	Float[] currentOrient = {0.0f, 0.0f, 0.0f}; 
+	boolean ready = false;
 	
 	// This code will be returned in onActivityResult() when the enable Bluetooth activity exits.
     private static final int REQUEST_ENABLE_BT = 1;
@@ -89,16 +92,45 @@ public class MainActivity extends Activity {
                 roll *= -1;
                 pitch *= -1;
             }
+            prevOrient[0] = currentOrient[0];
+            prevOrient[1] = currentOrient[1];
+            prevOrient[2] = currentOrient[2];
+            
+            currentOrient[0] = roll;
+            currentOrient[1] = pitch;
+            currentOrient[2] = yaw;
 
+            if (currentOrient[1] > prevOrient[1]) {
+            	ready = true;
+            }
+            
             // Next, we apply a rotation to the text view using the roll, pitch, and yaw.
-            mTextView.setText("roll" + roll + " | " + "pitch" +  pitch + " | " + "yaw" + yaw);
+            //mTextView.setText("roll" + roll + " | " + "pitch" +  pitch + " | " + "yaw" + yaw);
         }
-
+        
+        public double getAccelMag(Vector3 accel) {
+    		// calculate the magnitude of the acceleration
+    		double acc_mag = Math.sqrt(accel.x()*accel.x() +
+    			accel.y()*accel.y() + 
+    			accel.z()*accel.z());
+    		return acc_mag;
+        }
+        public void onAccelerometerData (Myo myo, long timestamp, Vector3 accel) {
+        	currentAccel = accel;
+        	//mTextView.setText("" + getAccelMag(currentAccel));
+        	
+        	if (getAccelMag(accel) > 1.7 && currentOrient[1] < prevOrient[1] && ready) {
+                	mTextView.setText("" + ++counter);
+                	ready = false;
+        	}
+        }
+        
         // onPose() is called whenever a Myo provides a new pose.
         @Override
         public void onPose(Myo myo, long timestamp, Pose pose) {
             // Handle the cases of the Pose enumeration, and change the text of the text view
             // based on the pose we receive.
+        	if (getAccelMag(currentAccel) > 1.3) return;
             switch (pose) {
                 case UNKNOWN:
                     mTextView.setText(getString(R.string.hello_world));
@@ -119,9 +151,11 @@ public class MainActivity extends Activity {
                     mTextView.setText(getString(R.string.pose_fist));
                     break;
                 case WAVE_IN:
+                	MainActivity.this.PreviousInstrument(InstrumentView);
                     mTextView.setText(getString(R.string.pose_wavein));
                     break;
                 case WAVE_OUT:
+                	MainActivity.this.NextInstrument(InstrumentView);
                     mTextView.setText(getString(R.string.pose_waveout));
                     break;
                 case FINGERS_SPREAD:
@@ -138,7 +172,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hello_world);
-        
+       
         
         mTextView = (TextView) findViewById(R.id.text);
         InstrumentView = (TextView) findViewById(R.id.textView1);
@@ -153,10 +187,7 @@ public class MainActivity extends Activity {
         }
         
         // Next, register for DeviceListener callbacks.
-        hub.addListener(/*mListener*/ new MyoBeatsListener(mTextView));
-        
-        Timeline timeline = new Timeline(this);
-        timeline.run();
+        hub.addListener(mListener);
     }
 
     
@@ -167,7 +198,9 @@ public class MainActivity extends Activity {
     
     /** Called when the user clicks the Previous Button */
     public void PreviousInstrument(View view) {
-    	InstrumentView.setText(Instrument[(--position)%4]);
+    	position--;
+    	if (position == -1) position = 3;
+    	InstrumentView.setText(Instrument[(position)%4]);
     }
     
     @Override
