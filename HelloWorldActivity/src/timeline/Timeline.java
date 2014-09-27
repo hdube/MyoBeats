@@ -14,10 +14,28 @@ public class Timeline implements Runnable {
 	private Record record;
 	private Context context;
 	
+	private SoundPool soundPool;
+	private int beat1ID;
+	private int beat2ID;
+	private int sax01ID;
+	
 	public Timeline(Context context) {
-		Log.e("Hi", "Timeline constructed");
 		this.record = new Record();
 		this.context = context;
+
+		// Load the sound
+		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			@Override
+			public void onLoadComplete(SoundPool soundPool, int sampleId,
+					int status) {
+				loaded = true;
+			}
+		});
+		// sounds we use
+		this.beat1ID = soundPool.load(this.context, R.raw.beat1, 1);
+		this.beat2ID = soundPool.load(this.context, R.raw.beat2, 1);
+		this.sax01ID = soundPool.load(this.context, R.raw.sax01, 2);
 	}
 	
 	@Override
@@ -26,71 +44,49 @@ public class Timeline implements Runnable {
 	}
 	
 	public void read() {
-		// Load the sound
-		//final boolean loaded = false;
-		Log.e("Hi", "In read()");
-		SoundPool soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
-		/*soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-			@Override
-			public void onLoadComplete(SoundPool soundPool, int sampleId,
-					int status) {
-				loaded = true;
-			}
-		});*/
-		int beat1ID = soundPool.load(this.context, R.raw.beat1, 1);
-		int beat2ID = soundPool.load(this.context, R.raw.beat1, 1);
-		//int beat1ID = soundPool.load("R.raw.beat1", 1);
-		//int beat2ID = soundPool.load("R.raw.beat1", 1);
 		
-		// Set volume
-			//AUDIO_SERVICE is the Context's variable
-		/*
+		/* Set volume
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		float actualVolume = (float) audioManager
 				.getStreamVolume(AudioManager.STREAM_MUSIC);
 		float maxVolume = (float) audioManager
 				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		float volume = actualVolume / maxVolume;
-		*/
+		float volume = actualVolume / maxVolume; */
 		
-		// 160 bpm in 4/4 -> 60 secs/160 beats = 3 secs/8 beats  = 1.5 secs/4 beats = 1.5 secs/barre
-		// 100 bpm in 4/4 -> 60 secs/100 beats = 6 secs/10 beats = 2.4 secs/4 beats = 2.4 secs/barre
 		long startTime;
 		long endTime;
+		long currentDuration;
 
 		long barreTime = 2000000000l; //2 secs
 		long beatTime = barreTime/4;
 		byte beatCount = 4; //4 beats per barre
 		byte count=0;
-		startTime = System.nanoTime();
-		// 1 second = 1000000000l
-		Log.e("Hi", "Before loop");
 		
-		//if (loaded)
+		startTime = System.nanoTime();
+		
+		Log.e("Hi", "Boolean loaded is "+(loaded?"true.":"false."));
+		
 		while(true) {
 			endTime = System.nanoTime();
-			Log.e("Hi", "Inside the loop");
-			//Log.e("Hi", "" + currentDuration);
+			currentDuration = endTime-startTime;
 			// This if statement only produces beats
 			if (endTime-startTime >= beatTime) {
 				startTime += beatTime;
 				count++;
 				count%=beatCount;
 				if (count == 0) { //barre complete
-					soundPool.play(beat2ID, 0.4f, 0.4f, 1, 0, 1.0f);
-					Log.e("Hi", "Barre complete");
+					soundPool.play(beat1ID, 0.6f, 0.6f, 1, 0, 1.0f);
 				}
 				else { //beat complete
-					soundPool.play(beat1ID, 0.4f, 0.4f, 1, 0, 1.0f);
-					Log.e("Hi", "Beat complete at time ");
+					soundPool.play(sax01ID, 0.6f, 0.6f, 1, 0, 1.0f);
 				}
 			}
 			
 			//This if statement checks for output sound.
-			/*if (record.playNextSound(currentDuration)) {
-				 //PLAY SOUND
+			if ((!record.isEmpty()) && record.playNextSound(currentDuration)) {
+				 record.getCurrentSoundRecording().play();
 				 record.soundPlayed();
-			}*/
+			}
 		}
 	}
 

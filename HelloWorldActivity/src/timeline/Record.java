@@ -10,6 +10,10 @@ public class Record {
 		recordList = new ArrayList<SoundRecording>();
 	}
 	
+	public SoundRecording getCurrentSoundRecording() {
+		return recordList.get(0);
+	}
+	
 	public void addSoundRecording(SoundRecording sound) {
 		long timer = sound.getFirstTimer();
 		int size = recordList.size();
@@ -35,6 +39,11 @@ public class Record {
 	
 	public boolean playNextSound(long timeStamp) {
 		if (timeStamp >= recordList.get(0).getCurrentTimer()) return true;
+		return false;
+	}
+	
+	public boolean isEmpty() {
+		if (recordList.size()==0) return true;
 		return false;
 	}
 	

@@ -153,10 +153,7 @@ public class MainActivity extends Activity {
         }
         
         // Next, register for DeviceListener callbacks.
-        hub.addListener(/*mListener*/ new MyoBeatsListener(mTextView));
-        
-        Timeline timeline = new Timeline(this);
-        timeline.run();
+        hub.addListener(mListener);
     }
 
     
@@ -179,6 +176,9 @@ public class MainActivity extends Activity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+        
+        Timeline timeline = new Timeline(this);
+        timeline.run();
     }
 
     @Override

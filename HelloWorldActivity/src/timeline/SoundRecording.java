@@ -1,25 +1,23 @@
 package timeline;
 
+import android.media.SoundPool;
+
 public final class SoundRecording {
 
-	private String soundPath; 	//not sure if we'll use that
 	private long[] timers;
-	private Record record;
 	private int count = 0;
 	private int index = 0;
 	
-	public SoundRecording(String soundPath, long[] timers, Record record) {
-		this.soundPath = soundPath;
+	private int soundID;
+	private SoundPool soundPool;
+	
+	public SoundRecording(long[] timers, int soundID, SoundPool soundPool) {
+		this.soundPool = soundPool;
+		this.soundID = soundID;
 		this.count = timers.length;
 		this.timers = new long[this.count];
 		for (int i=0; i<this.count; i++)
 			this.timers[i] = timers[i];
-		this.record = record;
-	}
-	
-	// get the sound to be made
-	public String getSoundPath() {
-		return this.soundPath;
 	}
 	
 	public long getCurrentTimer() {
@@ -34,5 +32,9 @@ public final class SoundRecording {
 	
 	public long getFirstTimer() {
 		return timers[0];
+	}
+	
+	public void play() {
+		soundPool.play(soundID, 0.6f, 0.6f, 1, 0, 1.0f);
 	}
 }
