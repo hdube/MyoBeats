@@ -10,7 +10,9 @@ import android.util.Log;
 
 public class Timeline implements Runnable {
 	
-	private boolean loaded = false;
+	private Thread thread;
+	
+	//private boolean loaded = false;
 	private Record record;
 	private Context context;
 	
@@ -18,7 +20,7 @@ public class Timeline implements Runnable {
 	
 	private SoundPool soundPool;
 	private int beat1ID;
-	private int beat2ID;
+	//private int beat2ID;
 	private int sax01ID;
 	
 	public Timeline(Context context) {
@@ -27,17 +29,19 @@ public class Timeline implements Runnable {
 
 		// Load the sound
 		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
-		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+		/*soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			@Override
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
 				loaded = true;
 			}
-		});
+		});*/
 		// sounds we use
 		this.beat1ID = soundPool.load(this.context, R.raw.beat1, 1);
-		this.beat2ID = soundPool.load(this.context, R.raw.beat2, 1);
+		//this.beat2ID = soundPool.load(this.context, R.raw.beat2, 1);
 		this.sax01ID = soundPool.load(this.context, R.raw.sax01, 2);
+		
+		this.thread = new Thread(this, "timelineThread");
 	}
 	
 	@Override
@@ -46,6 +50,7 @@ public class Timeline implements Runnable {
 	}
 	
 	public void read() {
+		this.play = true;
 		
 		/* Set volume
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -66,8 +71,6 @@ public class Timeline implements Runnable {
 		
 		startTime = System.nanoTime();
 		
-		Log.e("Hi", "Boolean loaded is "+(loaded?"true.":"false."));
-		
 		while(this.play) {
 			endTime = System.nanoTime();
 			currentDuration = endTime-startTime;
@@ -76,10 +79,10 @@ public class Timeline implements Runnable {
 				startTime += beatTime;
 				count++;
 				count%=beatCount;
-				if (count == 0) { //barre complete
+				if (count == 0) { 	//barre complete
 					soundPool.play(beat1ID, 0.6f, 0.6f, 1, 0, 1.0f);
 				}
-				else { //beat complete
+				else { 				//beat complete
 					soundPool.play(sax01ID, 0.6f, 0.6f, 1, 0, 1.0f);
 				}
 			}
@@ -94,7 +97,7 @@ public class Timeline implements Runnable {
 	
 	public void switchMode() {
 		if (this.play) this.play=false;
-		else this.play=true;
+		else this.run();
 	}
 
 }
