@@ -6,11 +6,16 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 public class Timeline extends AsyncTask<Void, Void, String> {
 	
 	private float volume;
+	long startTime;
+	long endTime;
+	long currentDuration;
+	Packet packet;
 	
 	//private boolean loaded = false;
 	private Record record;
@@ -22,15 +27,19 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	public int beat1ID;
 	//private int beat2ID;
 	public int sax01ID;
+	public int cb_clapID;
+	public int cb_hatID;
+	public int sfx_crunchy_bassID;
+	public int sfx_subbass_dropID;
 	
-	public Timeline(Context context) {
+	public Timeline(Context context, Packet packet) {
 		this.record = new Record();
 		this.context = context;
-		
+		this.packet = packet;
 		this.volume = 1.0f;
 
 		// Load the sound
-		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
 		/*soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			@Override
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
@@ -42,6 +51,10 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		this.beat1ID = soundPool.load(this.context, R.raw.beat1, 1);
 		//this.beat2ID = soundPool.load(this.context, R.raw.beat2, 1);
 		this.sax01ID = soundPool.load(this.context, R.raw.sax01, 2);
+		this.cb_clapID = soundPool.load(this.context, R.raw.cb_clap, 3);
+		this.cb_hatID = soundPool.load(this.context, R.raw.cb_hat, 4);
+		this.sfx_crunchy_bassID = soundPool.load(this.context, R.raw.sfx_crunchy_bass, 5);
+		this.sfx_subbass_dropID = soundPool.load(this.context, R.raw.sfx_subbass_drop, 6);
 	}
 	
 	@Override
@@ -59,9 +72,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 				.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		float volume = actualVolume / maxVolume; */
 		
-		long startTime;
-		long endTime;
-		long currentDuration;
+
 
 		long barreTime = 2000000000l; //2 secs
 		long beatTime = barreTime/4;
@@ -73,6 +84,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		while(true) {
 			endTime = System.nanoTime();
 			currentDuration = endTime-startTime;
+			packet.setCurrentDuration(currentDuration);
 			// This if statement only produces beats
 			if (endTime-startTime >= beatTime) {
 				startTime += beatTime;
@@ -88,8 +100,8 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 			
 			//This if statement checks for output sound.
 			if ((!record.isEmpty()) && record.playNextSound(currentDuration)) {
-				 record.getCurrentSoundRecording().play(getVolume());
-				 record.soundPlayed();
+				record.getCurrentSoundRecording().play(getVolume());
+				record.soundPlayed();
 			}
 		}
 	}
@@ -112,5 +124,9 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	public SoundPool getSoundPool() {
 		return this.soundPool;
 	}
-
+	
+	public long getCurrentDuration() {
+		Log.e("test", "" + currentDuration);
+		return this.currentDuration;
+	}
 }

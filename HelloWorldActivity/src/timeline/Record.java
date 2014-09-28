@@ -2,26 +2,26 @@ package timeline;
 
 import java.util.*;
 
+import android.util.Log;
+
 public class Record {
 
 	private ArrayList<SoundRecording> recordList;
+	private static int index;
 	
 	public Record() {
 		recordList = new ArrayList<SoundRecording>();
 	}
 	
 	public SoundRecording getCurrentSoundRecording() {
-		return recordList.get(0);
+		SoundRecording temp = recordList.get(index%recordList.size());
+		index += (index + 1)%recordList.size();
+		return temp;
 	}
 	
 	public void addSoundRecording(SoundRecording sound) {
-		long timer = sound.getFirstTimer();
-		int size = recordList.size();
-		for (int i=0; i<size; i++) {
-			if (recordList.get(i).getCurrentTimer() >= timer)
-				recordList.add(i, sound);
-		}
-		if (recordList.size()!=size) recordList.add(sound);
+		recordList.add(sound);
+		Collections.sort(recordList);
 	}
 	
 	public void soundPlayed() {
@@ -38,13 +38,16 @@ public class Record {
 	}
 	
 	public boolean playNextSound(long timeStamp) {
-		if (timeStamp >= recordList.get(0).getCurrentTimer()) return true;
+		Log.e("test", "" + recordList.get(index).getCurrentTimer());
+		if (timeStamp >= recordList.get(index).getCurrentTimer()) return true;
 		return false;
 	}
 	
 	public boolean isEmpty() {
 		if (recordList.size()==0) return true;
-		return false;
+		else {
+			return false;
+		}
 	}
 	
 }

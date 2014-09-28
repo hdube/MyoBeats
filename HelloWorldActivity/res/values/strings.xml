@@ -14,7 +14,7 @@
     <string name="arm_right">Right Arm</string>
     <string name="start_mixing">Start Mixing</string>
     <string name="initial_counter">0</string>
-    <string name="init_instrument">Drums</string>
+    <string name="init_instrument">Drums 1</string>
     <string name="play_pause">Play/Pause</string>
 
 </resources>
