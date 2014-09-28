@@ -34,7 +34,7 @@ public final class SoundRecording {
 		return timers[0];
 	}
 	
-	public void play() {
-		soundPool.play(soundID, 1f, 1f, 1, 0, 1.0f);
+	public void play(float volume) {
+		soundPool.play(soundID, volume, volume, 1, 0, 1.0f);
 	}
 }

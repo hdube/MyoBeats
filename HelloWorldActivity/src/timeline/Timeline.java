@@ -6,12 +6,11 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
-import android.util.Log;
 
 
 public class Timeline extends AsyncTask<Void, Void, String> {
 	
-	private Thread thread;
+	private float volume = 1.0f;
 	
 	//private boolean loaded = false;
 	private Record record;
@@ -49,9 +48,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		return "Done";
 	}
 	
-	public void read() {
-		this.play = true;
-		
+	public void read() {		
 		/* Set volume
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		float actualVolume = (float) audioManager
@@ -71,7 +68,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		
 		startTime = System.nanoTime();
 		
-		while(this.play) {
+		while(true) {
 			endTime = System.nanoTime();
 			currentDuration = endTime-startTime;
 			// This if statement only produces beats
@@ -80,24 +77,30 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 				count++;
 				count%=beatCount;
 				if (count == 0) { 	//barre complete
-					soundPool.play(beat1ID, 1f, 1f, 1, 0, 1.0f);
+					soundPool.play(beat1ID, this.volume, this.volume, 1, 0, 1.0f);
 				}
 				else { 				//beat complete
-					soundPool.play(beat1ID, 1f, 1f, 1, 0, 1.0f);
+					soundPool.play(beat1ID, this.volume, this.volume, 1, 0, 1.0f);
 				}
 			}
 			
 			//This if statement checks for output sound.
 			if ((!record.isEmpty()) && record.playNextSound(currentDuration)) {
-				 record.getCurrentSoundRecording().play();
+				 record.getCurrentSoundRecording().play(this.volume);
 				 record.soundPlayed();
 			}
 		}
 	}
 	
 	public void switchMode() {
-		if (this.play) this.play=false;
-		else this.read();
+		if (this.play) {
+			this.play=false;
+			this.volume=0f;
+		}
+		else {
+			this.play=true;
+			this.volume=1f;
+		}
 	}
 	
 	public SoundPool getSoundPool() {
