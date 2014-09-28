@@ -21,7 +21,7 @@ public class Timeline implements Runnable {
 	private SoundPool soundPool;
 	private int beat1ID;
 	//private int beat2ID;
-	private int sax01ID;
+	public int sax01ID;
 	
 	public Timeline(Context context) {
 		this.record = new Record();
@@ -83,7 +83,7 @@ public class Timeline implements Runnable {
 					soundPool.play(beat1ID, 1f, 1f, 1, 0, 1.0f);
 				}
 				else { 				//beat complete
-					soundPool.play(sax01ID, 1f, 1f, 1, 0, 1.0f);
+					soundPool.play(beat1ID, 1f, 1f, 1, 0, 1.0f);
 				}
 			}
 			
@@ -98,6 +98,10 @@ public class Timeline implements Runnable {
 	public void switchMode() {
 		if (this.play) this.play=false;
 		else this.run();
+	}
+	
+	public SoundPool getSoundPool() {
+		return this.soundPool;
 	}
 
 }
