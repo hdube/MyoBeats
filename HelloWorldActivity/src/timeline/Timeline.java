@@ -80,10 +80,10 @@ public class Timeline implements Runnable {
 				count++;
 				count%=beatCount;
 				if (count == 0) { 	//barre complete
-					soundPool.play(beat1ID, 0.6f, 0.6f, 1, 0, 1.0f);
+					soundPool.play(beat1ID, 1f, 1f, 1, 0, 1.0f);
 				}
 				else { 				//beat complete
-					soundPool.play(sax01ID, 0.6f, 0.6f, 1, 0, 1.0f);
+					soundPool.play(sax01ID, 1f, 1f, 1, 0, 1.0f);
 				}
 			}
 			

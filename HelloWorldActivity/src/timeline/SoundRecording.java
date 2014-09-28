@@ -35,6 +35,6 @@ public final class SoundRecording {
 	}
 	
 	public void play() {
-		soundPool.play(soundID, 0.6f, 0.6f, 1, 0, 1.0f);
+		soundPool.play(soundID, 1f, 1f, 1, 0, 1.0f);
 	}
 }
