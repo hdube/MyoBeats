@@ -16,5 +16,7 @@
     <string name="initial_counter">0</string>
     <string name="init_instrument">Drums 1</string>
     <string name="play_pause">Play/Pause</string>
+    <string name="reset">Align</string>
+    <string name="record">Record</string>
 
 </resources>

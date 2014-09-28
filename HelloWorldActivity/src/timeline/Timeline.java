@@ -34,6 +34,8 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	public int cb_hatID;
 	public int sfx_crunchy_bassID;
 	public int sfx_subbass_dropID;
+	public int shotsID;
+	public int everybodyID;
 	
 	public Timeline(Context context, Packet packet) {
 		//this.record = new Record();
@@ -42,7 +44,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		this.volume = 1.0f;
 
 		// Load the sound
-		soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(7, AudioManager.STREAM_MUSIC, 0);
 		/*soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			@Override
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
@@ -58,6 +60,8 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		this.cb_hatID = soundPool.load(this.context, R.raw.cb_hat, 4);
 		this.sfx_crunchy_bassID = soundPool.load(this.context, R.raw.sfx_crunchy_bass, 5);
 		this.sfx_subbass_dropID = soundPool.load(this.context, R.raw.sfx_subbass_drop, 6);
+		this.shotsID = soundPool.load(this.context, R.raw.shots, 7);
+		this.everybodyID = soundPool.load(this.context, R.raw.everybody, 8);
 	}
 	
 	public void setRecord(SoundPlayer record) {
