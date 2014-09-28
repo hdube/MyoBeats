@@ -5,10 +5,11 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
+import android.os.AsyncTask;
 import android.util.Log;
 
 
-public class Timeline implements Runnable {
+public class Timeline extends AsyncTask<Void, Void, String> {
 	
 	private Thread thread;
 	
@@ -40,13 +41,12 @@ public class Timeline implements Runnable {
 		this.beat1ID = soundPool.load(this.context, R.raw.beat1, 1);
 		//this.beat2ID = soundPool.load(this.context, R.raw.beat2, 1);
 		this.sax01ID = soundPool.load(this.context, R.raw.sax01, 2);
-		
-		this.thread = new Thread(this, "timelineThread");
 	}
 	
 	@Override
-	public void run() {
+	protected String doInBackground(Void... params) {
 		read();
+		return "Done";
 	}
 	
 	public void read() {
@@ -97,7 +97,7 @@ public class Timeline implements Runnable {
 	
 	public void switchMode() {
 		if (this.play) this.play=false;
-		else this.run();
+		else this.read();
 	}
 	
 	public SoundPool getSoundPool() {
