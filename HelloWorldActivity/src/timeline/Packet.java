@@ -2,13 +2,21 @@ package timeline;
 
 import java.util.ArrayList;
 
+import myo.beats.Timer;
+
 public class Packet {
+	Timer timer;
 	boolean recording = false;
 	long currentDuration = 0;
 	ArrayList<SoundPlayer> recordList;
 	static int index = 0;
-	private int beatCount = 0;
+	private int beatCount = 8;
+	private long barretime =  4000000000L;
 	
+	public long getBarretime() {
+		return barretime;
+	}
+
 	public int getBeatCount() {
 		return beatCount;
 	}
@@ -21,6 +29,10 @@ public class Packet {
 		this.recordList = new ArrayList<SoundPlayer>();
 	}
 	
+	public Packet(Timer timer) {
+		this.timer = timer;
+	}
+
 	public ArrayList<SoundPlayer> getRecordList() {
 		return recordList;
 	}
@@ -41,7 +53,11 @@ public class Packet {
 		this.recording = val;
 	}
 	
-	public boolean getRecording() {
+	public boolean isRecording() {
 		return recording;
+	}
+	
+	public Timer getTimer() {
+		return timer;
 	}
 }

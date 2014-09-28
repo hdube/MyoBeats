@@ -6,7 +6,7 @@ import timeline.Sound;
 public class SoundPlayer implements Comparable{
 	Sound sound;
 	SoundPool soundpool;
-	boolean played = false;
+	boolean hasBeenPlayed = false;
 	
 	public SoundPlayer(Sound sound, SoundPool soundpool) {
 		this.sound = sound;
@@ -15,7 +15,7 @@ public class SoundPlayer implements Comparable{
 	
 	public void play() {
 		soundpool.play(sound.getSoundID(), 1f, 1f, 1, 0, 1.0f);
-		played = true;
+		hasBeenPlayed = true;
 	}
 
 	@Override
@@ -28,9 +28,12 @@ public class SoundPlayer implements Comparable{
 	}
 	
 	public void setPlayed(boolean val) {
-		played = val;
+		hasBeenPlayed = val;
 	}
 	
+	public boolean hasBeenPlayed() {
+		return hasBeenPlayed;
+	}
 	public Sound getSound() {
 		return sound;
 	}

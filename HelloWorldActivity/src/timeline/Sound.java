@@ -20,8 +20,8 @@ public class Sound implements Comparable {
 		this.soundID = soundID;
 	}
 
-	public Sound(long timestamp, int soundID) {
-		this.timestamp = timestamp;
+	public Sound(Packet packet, int soundID) {
+		this.timestamp = packet.getTimer().getCycleTime();
 		this.soundID = soundID;
 	}
 

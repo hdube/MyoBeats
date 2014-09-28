@@ -140,7 +140,7 @@ public class MainActivity extends Activity {
 
             mTextView.setText("" + (packet.getBeatCount() + 1));
             
-            if (currentOrient[1] < -30f) {
+            if (currentOrient[1] < -46f) {
             	ready = true;
             }
         }
@@ -154,27 +154,27 @@ public class MainActivity extends Activity {
         }
         public void onAccelerometerData (Myo myo, long timestamp, Vector3 accel) {
         	currentAccel = accel;
-        	if (leftExec && currentOrient[1] < -20.0f) leftExec = false; 
-        	if (rightExec && currentOrient[1] < -20.0f) rightExec = false;
+        	if (leftExec && currentOrient[1] < -5.0f) leftExec = false; 
+        	if (rightExec && currentOrient[1] < -5.0f) rightExec = false;
         	
         	
-        	if (currentOrient[1] > -20.0f && ready) {
-            	// LEFT
-            		if (currentOrient[2] > 15.0f) {
+        	if (currentOrient[1] > -45.0f && ready) {
+            		// LEFT
+            		if (currentOrient[2] > 5.0f) {
             			noise(true);
             		}
             	
             		// RIGHT
-            		else if (currentOrient[2] < -15.0f){
+            		else if (currentOrient[2] < -5.0f){
             			noise(false);
             		}
             		ready = false; 
         	}
-            
+             
             if (record) {
-            	currentTime = System.nanoTime();
-                if (currentTime - recordStartTime  > 4000000000L) {
-                	Log.e("test", "" + (currentTime - recordStartTime));
+            	packet.getTimer().update();
+            	//Log.e("test", "CURRENT: ")
+                if (packet.getTimer().getCurrentTime() - packet.getTimer().getStartRecordTime() > packet.getBarretime()) {
         			Collections.sort(soundList);
         			Log.e("test", "Done Recording");
         			record = false;
@@ -189,23 +189,26 @@ public class MainActivity extends Activity {
         	String selector = InstrumentView.getText().toString();
         	SoundPool soundPool;
         	
+        	packet.getTimer().update();
         	//Log.e("test", "" + timeline.beat1ID);
         	soundPool = timeline.getSoundPool();
         	
         	switch (selector) {
         		case "Drums 1":
-        			if (left) soundID = timeline.beat1ID;
-        			else soundID = timeline.sax01ID;
+        			if (left) soundID = timeline.cb_kickID;
+        			else soundID = timeline.cb_snareID;
         			break;
         		case "Drums 2":
         			if (left) soundID = timeline.cb_clapID;
         			else soundID = timeline.cb_hatID;
         			break;
         		case "SFX":
-        			if (left) soundID = timeline.sfx_crunchy_bassID;
-        			else soundID = timeline.sfx_subbass_dropID;
+        			if (left) soundID = timeline.electrohighID;
+        			else soundID = timeline.electrolowID;
         			break;
         		case "Bass":
+        			if (left) soundID = timeline.punk1ID;
+        			else soundID = timeline.punk2ID;
         			break;
         		case "Go Crazy":
         			if (left) soundID = timeline.shotsID;
@@ -218,14 +221,10 @@ public class MainActivity extends Activity {
         	
         	if (record) {
         		currentTime = System.nanoTime();
-        		soundList.add(new SoundPlayer(new Sound(packet.getCurrentDuration(), soundID), soundPool));
-            	Log.e("test", "" + (currentTime - recordStartTime));
+        		soundList.add(new SoundPlayer(new Sound(packet, soundID), soundPool));
+            	Log.e("test", "Cycle Time " + packet.getTimer().getCycleTime());
             	
-            	packet.setRecordList(soundList);
-    			//SoundRecording sr = new SoundRecording(new Sound(packet.getCurrentDuration(), soundID), soundPool);
-    			//packet.getRecord().addSoundRecording(sr);
-        		//recordList.add(new Sound(packet.getCurrentDuration(), soundID));
-        		
+            	packet.setRecordList(soundList);        		
         	}
         }
         
@@ -299,9 +298,10 @@ public class MainActivity extends Activity {
         // Next, register for DeviceListener callbacks.
         hub.addListener(mListener);
         
-        packet = new Packet();
-        timeline = new Timeline(this, packet); 
-        timeline.execute();
+
+	   packet = new Packet(new Timer());
+	    timeline = new Timeline(this, packet); 
+	    timeline.execute();
     }
 
     
@@ -375,10 +375,10 @@ public class MainActivity extends Activity {
     }
     
     public void Record() {
-    	recordStartTime = System.nanoTime();
     	record = true;
     	packet.setRecording(true);
     	Log.e("test", "Recording");
+    	packet.getTimer().setStartRecordTime();
     }
     
     public void Play(View view) {
@@ -389,5 +389,9 @@ public class MainActivity extends Activity {
     
     public void reset(View view) {
     	initYaw = currentYaw;
+    }
+    
+    public void clear(View view) {
+    	packet.setRecordList(null);
     }
 }
