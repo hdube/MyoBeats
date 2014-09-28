@@ -19,7 +19,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	private boolean play=false;
 	
 	private SoundPool soundPool;
-	private int beat1ID;
+	public int beat1ID;
 	//private int beat2ID;
 	public int sax01ID;
 	
