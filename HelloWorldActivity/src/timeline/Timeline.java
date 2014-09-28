@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 
 public class Timeline extends AsyncTask<Void, Void, String> {
 	
-	private float volume = 1.0f;
+	private float volume;
 	
 	//private boolean loaded = false;
 	private Record record;
@@ -26,6 +26,8 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	public Timeline(Context context) {
 		this.record = new Record();
 		this.context = context;
+		
+		this.volume = 1.0f;
 
 		// Load the sound
 		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
@@ -77,16 +79,16 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 				count++;
 				count%=beatCount;
 				if (count == 0) { 	//barre complete
-					soundPool.play(beat1ID, this.volume, this.volume, 1, 0, 1.0f);
+					soundPool.play(beat1ID, getVolume(), getVolume(), 1, 0, 1.0f);
 				}
 				else { 				//beat complete
-					soundPool.play(beat1ID, this.volume, this.volume, 1, 0, 1.0f);
+					soundPool.play(beat1ID, getVolume(), getVolume(), 1, 0, 1.0f);
 				}
 			}
 			
 			//This if statement checks for output sound.
 			if ((!record.isEmpty()) && record.playNextSound(currentDuration)) {
-				 record.getCurrentSoundRecording().play(this.volume);
+				 record.getCurrentSoundRecording().play(getVolume());
 				 record.soundPlayed();
 			}
 		}
@@ -101,6 +103,10 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 			this.play=true;
 			this.volume=1f;
 		}
+	}
+	
+	public float getVolume() {
+		return this.volume;
 	}
 	
 	public SoundPool getSoundPool() {
