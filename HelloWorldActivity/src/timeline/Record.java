@@ -21,6 +21,10 @@ public class Record {
 	
 	public void addSoundRecording(SoundRecording sound) {
 		recordList.add(sound);
+		Log.e("test", "" + recordList.size());
+	}
+	
+	public void sort() {
 		Collections.sort(recordList);
 	}
 	
@@ -48,6 +52,10 @@ public class Record {
 		else {
 			return false;
 		}
+	}
+	
+	public int getRecordSize() {
+		return recordList.size();
 	}
 	
 }

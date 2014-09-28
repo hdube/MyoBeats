@@ -1,5 +1,7 @@
 package timeline;
 
+import java.util.ArrayList;
+
 import myo.beats.R;
 import android.content.Context;
 import android.media.AudioManager;
@@ -11,6 +13,7 @@ import android.util.Log;
 
 public class Timeline extends AsyncTask<Void, Void, String> {
 	
+	int j = 0;
 	private float volume;
 	long startTime;
 	long endTime;
@@ -18,7 +21,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	Packet packet;
 	
 	//private boolean loaded = false;
-	private Record record;
+	private SoundPlayer record;
 	private Context context;
 	
 	private boolean play=false;
@@ -33,7 +36,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	public int sfx_subbass_dropID;
 	
 	public Timeline(Context context, Packet packet) {
-		this.record = new Record();
+		//this.record = new Record();
 		this.context = context;
 		this.packet = packet;
 		this.volume = 1.0f;
@@ -55,6 +58,10 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 		this.cb_hatID = soundPool.load(this.context, R.raw.cb_hat, 4);
 		this.sfx_crunchy_bassID = soundPool.load(this.context, R.raw.sfx_crunchy_bass, 5);
 		this.sfx_subbass_dropID = soundPool.load(this.context, R.raw.sfx_subbass_drop, 6);
+	}
+	
+	public void setRecord(SoundPlayer record) {
+		this.record = record;
 	}
 	
 	@Override
@@ -90,6 +97,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 				startTime += beatTime;
 				count++;
 				count%=beatCount;
+				packet.setBeatCount((int) count);
 				if (count == 0) { 	//barre complete
 					soundPool.play(beat1ID, getVolume(), getVolume(), 1, 0, 1.0f);
 				}
@@ -98,10 +106,30 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 				}
 			}
 			
+
 			//This if statement checks for output sound.
-			if ((!record.isEmpty()) && record.playNextSound(currentDuration)) {
-				record.getCurrentSoundRecording().play(getVolume());
-				record.soundPlayed();
+			ArrayList<SoundPlayer> list = packet.getRecordList();
+			
+			if (count == 0) {
+				synchronized (list) {
+					for (SoundPlayer s : list) {
+						s.setPlayed(false);
+					}
+				}
+			}
+			
+			if ((!packet.getRecording()) ) {
+				for (int i = list.size() - 1; i > 0; i--) {
+					if (j == 0) {
+						Log.e("test", "-------");
+						Log.e("test", "" + (list.get(i).getSound().getTimestamp() - currentDuration));
+					}
+					if (list.get(i).getSound().getTimestamp() - currentDuration < 10000 && list.get(i).getSound().getTimestamp() - currentDuration >                                                                                                                                                                                                                                                                                                                                                                                                                       0) {
+						list.get(i).play();
+						break;
+					}
+				}
+				j++;
 			}
 		}
 	}
@@ -126,7 +154,7 @@ public class Timeline extends AsyncTask<Void, Void, String> {
 	}
 	
 	public long getCurrentDuration() {
-		Log.e("test", "" + currentDuration);
+		//Log.e("test", "" + currentDuration);
 		return this.currentDuration;
 	}
 }
